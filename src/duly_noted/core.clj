@@ -1,17 +1,22 @@
 (ns duly-noted.core
-  (:require [seesaw.core :as s]))
+  (:require [seesaw.core :as s :refer [native! invoke-later
+                                       frame pack!
+                                       show! config
+                                       config! label]]))
 
+(native!)
 
-(def f (s/frame :title "Write"
-                :content "Welcome, writer. Thoughts?"))
+(def f (frame :title "Write"
+              :content "Welcome, writer. Thoughts?"
+              :on-close :exit))
 
-(def l)
+(config! f :content "Express them here.")
+
+(def lbl (label "Notepad" ))
+
+(config! f :content lbl)
 (defn -main [& args]
-  (s/native!)
-  (s/invoke-later
-   (-> (s/frame
-        :title "Write"
-        :content "Welcome, writer. Thoughts"
-        :on-close :exit)
+  (invoke-later
+   (-> f
        s/pack!
        s/show!)))
