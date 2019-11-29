@@ -4,6 +4,7 @@
                                        show! config
                                        config! label
                                        button listen
+                                       alert input
                                        listbox scrollable
                                        selection]]
             [seesaw.font :refer [font]]))
@@ -24,17 +25,21 @@
 ; we can alter the content of a widget with (config! widget-name :keyword new-value)
 
 (def lbl (label "Notepad" ))
+; We can create a labeled frame. Seesaw will make labels of strings on it's own.
 
 (defn display [content]
   (config! f :content content)
   content)
 
 (config! lbl :background :pink :foreground "#00f")
+; We can manipulate colors and other properties with config!
 
 (config! lbl :font (font :name :monospaced
                          :style #{:bold :italic}
                          :size 18))
 
+(alert "I'm alerting you!")
+(input "What's your favorite programming language?")
 (def b (button :text "Click Me"))
 
 (display b)
@@ -50,7 +55,9 @@
 
 (display (scrollable lb))
 
-(selection lb)
+(selection lb {:multi? true})
+
+(listen lb :selection (fn [evnt] (println "Selection is " (selection evnt))))
 
 (defn -main [& args]
   (invoke-later
