@@ -6,7 +6,8 @@
                                        button listen
                                        alert input
                                        listbox scrollable
-                                       selection]]
+                                       selection text
+                                       text! left-right-split]]
             [seesaw.font :refer [font]]))
 
 (native!)
@@ -40,6 +41,7 @@
 
 (alert "I'm alerting you!")
 (input "What's your favorite programming language?")
+;notice inputs and alerts block frames until resolved.
 (def b (button :text "Click Me"))
 
 (display b)
@@ -58,6 +60,29 @@
 (selection lb {:multi? true})
 
 (listen lb :selection (fn [evnt] (println "Selection is " (selection evnt))))
+
+(def field (display (text "This is a text field.")))
+
+; There seems to be a ! function for setting the value of anything.
+
+(config! field :font "MONOSPACED-PLAIN-12" :background "#f88")
+
+(def area (text :multi-line? true :font "MONOSPACED-PLAIN-14"
+                :background :blue
+                :foreground :pink :text "This
+Is
+Multi
+Lined"))
+
+; (display area)
+
+; (text! area (java.net.URL. "https://clojure.org"))
+
+(display (scrollable area))
+(def lrs left-right-split)
+(def split (lrs (scrollable lb) (scrollable area) :divider-location 1/3))
+
+(display split)
 
 (defn -main [& args]
   (invoke-later
