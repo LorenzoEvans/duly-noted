@@ -7,7 +7,8 @@
                                        alert input
                                        listbox scrollable
                                        selection text
-                                       text! left-right-split]]
+                                       text! left-right-split
+                                       scroll! radio]]
             [seesaw.font :refer [font]]))
 
 (native!)
@@ -39,8 +40,8 @@
                          :style #{:bold :italic}
                          :size 18))
 
-(alert "I'm alerting you!")
-(input "What's your favorite programming language?")
+; (alert "I'm alerting you!")
+; (input "What's your favorite programming language?")
 ;notice inputs and alerts block frames until resolved.
 (def b (button :text "Click Me"))
 
@@ -79,9 +80,27 @@ Lined"))
 ; (text! area (java.net.URL. "https://clojure.org"))
 
 (display (scrollable area))
+
 (def lrs left-right-split)
 (def split (lrs (scrollable lb) (scrollable area) :divider-location 1/3))
 
+(defn doc-str [s] 
+  (-> 
+   (symbol "seesaw.core" (name s)) 
+   resolve 
+   meta 
+   :doc))
+
+(listen lb :selection
+        (fn [evnt]
+          (when-let [s (selection evnt)]
+            (-> area
+                (text! (doc-str s))
+                (scroll! :to :top)))))
+
+(def rbs 
+  (for [i [:source :doc]]
+    (radio :id i :class :type :text (name i))))
 (display split)
 
 (defn -main [& args]
