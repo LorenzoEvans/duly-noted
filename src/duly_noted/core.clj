@@ -1,14 +1,16 @@
 (ns duly-noted.core
   (:require [seesaw.core :as s :refer [native! invoke-later
                                        frame pack!
-                                       show! config
+                                       show! select
                                        config! label
                                        button listen
-                                       alert input
+                                       id-of input
                                        listbox scrollable
                                        selection text
                                        text! left-right-split
-                                       scroll! radio]]
+                                       scroll! radio
+                                       border-panel horizontal-panel
+                                       button-group]]
             [seesaw.font :refer [font]]))
 
 (native!)
@@ -54,10 +56,11 @@
 (listen b :mouse-entered #(config! % :foreground :blue)
           :mouse-exited #(config! % :foreground :red))
 
-(def lb (listbox :model (-> 'seesaw.core ns-publics keys sort)))
+(def lb (listbox :model (-> 'clojure.core ns-publics keys sort)))
 
 (display (scrollable lb))
 
+(config! lb :background :gray :foreground :white)
 (selection lb {:multi? true})
 
 (listen lb :selection (fn [evnt] (println "Selection is " (selection evnt))))
@@ -86,7 +89,7 @@ Lined"))
 
 (defn doc-str [s] 
   (-> 
-   (symbol "seesaw.core" (name s)) 
+   (symbol "clojure.core" (name s)) 
    resolve 
    meta 
    :doc))
@@ -103,6 +106,21 @@ Lined"))
     (radio :id i :class :type :text (name i))))
 (display split)
 
+(display 
+ (border-panel
+  :north (horizontal-panel :items rbs)
+  :center split
+  :vgap 5 :hgap 5 :border 5))
+
+(def group (button-group))
+
+(config! (select f [:.type]) :group group)
+
+(listen group :selection
+        (fn [evnt]
+          (when-let [s (selection group)]
+            (println "Selection is " (id-of s)))))
+(selection group)
 (defn -main [& args]
   (invoke-later
    (-> f
