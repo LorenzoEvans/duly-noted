@@ -116,11 +116,12 @@ Lined"))
 
 (config! (select f [:.type]) :group group)
 
+(selection group)
+
 (listen group :selection
         (fn [evnt]
           (when-let [s (selection group)]
             (println "Selection is " (id-of s)))))
-(selection group)
 (defn -main [& args]
   (invoke-later
    (-> f
