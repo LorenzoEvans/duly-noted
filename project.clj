@@ -5,6 +5,9 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/java.jdbc "0.7.10"]
-                  [org.postgresql/postgresql "42.1.4"]
+                 [org.postgresql/postgresql "42.1.4"]
+                 ;; https://mvnrepository.com/artifact/com.bigchaindb/bigchaindb-driver
+                 [com.bigchaindb/bigchaindb-driver "1.2"]
+                 [cljfx "1.6.0"]
                  [seesaw "1.5.0"]]
   :repl-options {:init-ns duly-noted.core})
