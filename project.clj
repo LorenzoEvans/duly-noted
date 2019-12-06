@@ -10,4 +10,5 @@
                  [com.bigchaindb/bigchaindb-driver "1.2"]
                  [cljfx "1.6.0"]
                  [seesaw "1.5.0"]]
+  :main duly-noted.core
   :repl-options {:init-ns duly-noted.core})

@@ -1,5 +1,6 @@
 (ns duly-noted.core
-  (:require [cljfx.api :as fx])
+  (:require [cljfx.api :as fx]
+            [duly-noted.database.state :refer [*state*]])
   (:gen-class))
 
 
@@ -19,22 +20,47 @@
 ; - `:fx.opt/map-event-handler` — a function that gets called when map is used in place
 ;   of change-listener, event-handler or any other callback-like prop. It receives that
 ;   map with `:fx/event` key containing appropriate event data"
-(def renderer (fx/create-renderer))
-(defn root [{:keys [showing]}]
-  (fx/on-fx-thread ; Execute body in implicit do, if current thread is fx thread, body executes immediately.
-   (fx/create-component
-    {:fx/type :stage
-     :showing true
-     :title "CLJFX EX"
-     :width 600
-     :height 500
-     :scene {:fx/type :scene
-             :root {:fx/type :v-box
-                    :alignment :center
-                    :children [{:fx/type :label
-                                :text "Welcome to your application!"}]}}})))  
-                                
-  
+; (def renderer (fx/create-renderer))
+
+    
+    ; (defn root [{:keys [showing]}]
+    ;   (fx/on-fx-thread ; Execute body in implicit do, if current thread is fx thread, body executes immediately.
+    ;    (fx/create-component
+    ;     {:fx/type :stage
+    ;      :showing true
+    ;      :title "CLJFX EX"
+    ;      :width 600
+    ;      :height 500
+    ;      :scene {:fx/type :scene
+    ;              :root {:fx/type :v-box
+    ;                     :alignment :center
+    ;                     :children [{:fx/type :label
+    ;                                 :text "Welcome to your application!"}]}}})))  
+
+
+(defn title-input [{:keys [title]}]
+  {:fx/type :text-field
+   :on-text-changed #(swap! *state* assoc :title %)
+   :text title})
+
+(defn root [{:keys [title]}]
+  {:fx/type :stage
+   :showing true
+   :title title
+   :width 500
+   :height 500
+   :scene {:fx/type :scene
+           :root {:fx/type :v-box
+                  :children [{:fx/type :label
+                              :text "Title input"}
+                             {:fx/type title-input
+                              :title title}]}}}) 
+
+
+(def renderer
+  (fx/create-renderer
+    :middleware (fx/wrap-map-desc assoc :fx/type root)))
+    
 (defn -main []
-  (renderer {:fx/type root
-             :showing true}))
+  (fx/mount-renderer *state* renderer))
+    
