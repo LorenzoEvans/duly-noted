@@ -7,4 +7,5 @@
 
 (def ^:dynamic *todo-state*
     (atom {:typed-text ""
-           :by-id}))
+           :id 0
+           :done false}))

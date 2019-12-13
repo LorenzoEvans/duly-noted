@@ -1,6 +1,6 @@
 (ns duly-noted.core
   (:require [cljfx.api :as fx]
-            [duly-noted.database.state :refer [*state*]])
+            [duly-noted.database.state :refer [*state* *todo-state*]])
   (:gen-class))
 
 
@@ -62,7 +62,10 @@
    :padding 5
    :children [{:fx/type :check-box
                :selected done
-               :on-selected-changed}]})
+               :on-selected-changed #(swap! *todo-state* assoc-in [:by-id id done] %)
+               {:fx/type :label
+                :style {:-fx-text-fill (if done :grey :black)}
+                :text text}}]})
    
      
 
