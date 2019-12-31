@@ -9,8 +9,7 @@
 
 (def init-state 
     {:typed-text ""
-     :notes [
-             {:id 0 :text "Write code." :done? false :tags #{"Code"}}
+     :notes [{:id 0 :text "Write code." :done? false :tags #{"Code"}}
              {:id 0 :text "Go to a meet-up" :done? false :tags #{"Tech" "Code"}}
              {:id 0 :text "Meditate" :done? false :tags #{"Health" "Self-Care"}}
              {:id 0 :text "Buy Lions Mane" :done? false :tags #{"Health"}}]
@@ -24,6 +23,11 @@
             (when-not root-stage?
                 (println "Closing application")
                 (javafx.application.Platform/exit)))))
+
+(defmulti handle-event (fn [state event] (:event event)))))
+
+(defmethod handle-event :reset [_ {:keys [root-stage?]}] (assoc init-state :root-stage? root-stage?))
+(defmethod handle-event :add-item [state {:keys [fn-fx/includes]}] (update-in -state :notes conj {:done? false :text (get-in includes [::new-item :text]) :tags #{}}))
 (def main-font (ui/font :family "Helvetica" :size 20))
 
 (defui TodoItem
@@ -41,7 +45,10 @@
         (ui/v-box :style "-fx-base: rgb(30, 30, 35"
                   :padding (ui/insets :top-right-bottom-left 25)
                   :children [(ui/text-field :id ::new-item
-                                            :prompt-text "What's on your mind?")])))
+                                            :prompt-text "What's on your mind?"
+                                            :font main-font
+                                            :on-action {:event :add-item
+                                                        :fn-fx/include {::new-item #{text}}})])))
                                             
 (defui Stage
     (render [this {:keys [root-stage? notes typed-text]}]
@@ -53,10 +60,6 @@
                                                 :padding (javafx.geometry.Insets. 15 12 15 12)
                                                 :spacing 10
                                                 :alignment))))))
-
-(defmulti handle-event (fn [_ {:keys [event]}] event))
-
-(defmethod handle-event :reset [_ {:keys [root-stage?]}] (assoc init-state :root-stage? root-stage?))
 
 (defn start!
     ([] (start! {:root-stage? true}))
