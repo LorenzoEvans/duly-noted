@@ -43,6 +43,17 @@
 ;   {:fx/type :text-field
 ;    :on-text-changed #(swap! *state* assoc :title %)
 ;    :text title})
+(defn todo-view [{:keys [text id done]}]
+  {:fx/type :h-box
+   :spacing 5
+   :padding 5
+   :children [{:fx/type :check-box
+               :selected done
+               :on-selected-changed {:event/type ::set-done :id id}}
+              {:fx/type :label}
+              :style {:-fx-text-fill (if done :grey :black)}
+              :text text]})
+
 (defn root [{:keys [by-id typed-text]}]
   {:fx/type :stage
    :showing true
@@ -65,18 +76,6 @@
                               :on-text-changed {:event/type ::type}
                               :on-key-pressed {:event/type ::press}}]}}})
 
-(defn todo-view [{:keys [text id done]}]
-  {:fx/type :h-box
-   :spacing 5
-   :padding 5
-   :children [{:fx/type :check-box
-               :selected done
-               :on-selected-changed {:event/type ::set-done :id id}}
-              {:fx/type :label}
-              :style {:-fx-text-fill (if done :grey :black)}
-              :text text]})
-   
-            
 (defn map-event-handler [event]
   (case (:event/type event)
     ::set-done (swap! *todo-state* assoc-in [:by-id (:id event) :done] (:fx/event event))
@@ -90,11 +89,8 @@
                                                  :done false}))))
     nil))
 
-(def renderer
-  (fx/create-renderer
-    :middleware (fx/wrap-map-desc assoc :fx/type root)
-    :opts {:fx.opt/map-event-handler map-event-handler}))
-    
 (defn -main []
-  (fx/mount-renderer *state* renderer))
-    
+ (fx/mount-renderer
+  *todo-state*
+   (fx/create-renderer
+    :middleware (fx/wrap-map-desc assoc :fx/type root))))
