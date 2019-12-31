@@ -4,22 +4,55 @@
               [fn-fx.controls :as ui])
     (:import (javafx.stage Stage)))
 
-    
+
 
 
 (def init-state 
     {:typed-text ""
      :notes [
-             {:id 0 :text "Write code." :done false :tags #{"Code"}}
-             {:id 0 :text "Go to a meet-up" :done false :tags #{"Tech" "Code"}}
-             {:id 0 :text "Meditate" :done false :tags #{"Health" "Self-Care"}}
-             {:id 0 :text "Buy Lions Mane" :done false :tags #{"Health"}}]
+             {:id 0 :text "Write code." :done? false :tags #{"Code"}}
+             {:id 0 :text "Go to a meet-up" :done? false :tags #{"Tech" "Code"}}
+             {:id 0 :text "Meditate" :done? false :tags #{"Health" "Self-Care"}}
+             {:id 0 :text "Buy Lions Mane" :done? false :tags #{"Health"}}]
      :root-stage? true})
 
 (defonce app-state (atom init-state))
 
+(defn force-exit [root-stage?]
+    (reify javafx.event.EventHandler
+        (handle [this event]
+            (when-not root-stage?
+                (println "Closing application")
+                (javafx.application.Platform/exit)))))
+(def main-font (ui/font :family "Helvetica" :size 20))
+
+(defui TodoItem
+    (render [this {:keys [done? id text]}]
+        (ui/border-pane :padding (ui/insets :top 10 :bottom 10 :left 0 :right 0)
+                        :left (ui/check-box :font main-font
+                                            :text text
+                                            :selected done?
+                                            :on-action {:event :swap-status :idx idx})
+                        :right (ui/button :text "x"
+                                          :on-action {:event :delete-item :idx idx}))))
+
+(defui MainWindow
+    (render [this {:keys [notes]}]
+        (ui/v-box :style "-fx-base: rgb(30, 30, 35"
+                  :padding (ui/insets :top-right-bottom-left 25)
+                  :children [(ui/text-field :id ::new-item
+                                            :prompt-text "What's on your mind?")])))
+                                            
 (defui Stage
-    (render [this {:keys [root-stage? notes typed-text]}]))
+    (render [this {:keys [root-stage? notes typed-text]}]
+        (ui/stage :title "Personote"
+                  :on-close-request (force-exit)
+                  :shown true
+                  :scene (ui/scene :root (ui/border-pane
+                                          :top (ui/h-box
+                                                :padding (javafx.geometry.Insets. 15 12 15 12)
+                                                :spacing 10
+                                                :alignment))))))
 
 (defmulti handle-event (fn [_ {:keys [event]}] event))
 

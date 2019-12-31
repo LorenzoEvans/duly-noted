@@ -9,7 +9,7 @@
     (atom {:typed-text ""
            :by-id {0 {:id 0
                       :text "Write Code."
-                      :done false}
+                      :done? false}
                    1 {:id 1
                       :text "Drink coffee."
-                      :done true}}}))
+                      :done? true}}}))
