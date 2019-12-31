@@ -1,8 +1,7 @@
 (ns personote.note-view
     (:require [fn-fx.fx-dom :as fx-dom]
               [fn-fx.diff :refer [component defui render should-update?]]
-              [fn-fx.controls :as ui])
-    (:import (javafx.stage Stage)))
+              [fn-fx.controls :as ui]))
 
 
 
@@ -24,14 +23,14 @@
                 (println "Closing application")
                 (javafx.application.Platform/exit)))))
 
-(defmulti handle-event (fn [state event] (:event event)))))
+(defmulti handle-event (fn [state event] (:event event)))
 
 (defmethod handle-event :reset [_ {:keys [root-stage?]}] (assoc init-state :root-stage? root-stage?))
-(defmethod handle-event :add-item [state {:keys [fn-fx/includes]}] (update-in -state :notes conj {:done? false :text (get-in includes [::new-item :text]) :tags #{}}))
+(defmethod handle-event :add-item [state {:keys [fn-fx/includes]}] (update-in state :notes conj {:done? false :text (get-in includes [::new-item :text]) :tags #{}}))
 (defmethod handle-event :delete-item [state {:keys [id]}] (update-in state [:notes] 
                                                            (fn [items]
                                                             (vec (concat (take id items) (drop (inc id) items))))))
-(defmethod handle-event :swap-status [state {:keys [id]}] (update-in state [:notes id done?] (fn [x] (not x))))
+(defmethod handle-event :swap-status [state {:keys [id done?]}] (update-in state [:notes id done?] (fn [x] (not x))))
 (defmethod handle-event :default [state event] (println (:type event) event state))
 (def main-font (ui/font :family "Helvetica" :size 20))
 
@@ -41,9 +40,9 @@
                         :left (ui/check-box :font main-font
                                             :text text
                                             :selected done?
-                                            :on-action {:event :swap-status :idx idx})
+                                            :on-action {:event :swap-status :id id})
                         :right (ui/button :text "x"
-                                          :on-action {:event :delete-item :idx idx}))))
+                                          :on-action {:event :delete-item :id id}))))
 
 (defui MainWindow
     (render [this {:keys [notes]}]
@@ -66,8 +65,7 @@
                   :scene (ui/scene :root (ui/border-pane
                                           :top (ui/h-box
                                                 :padding (javafx.geometry.Insets. 15 12 15 12)
-                                                :spacing 10
-                                                :alignment))))))
+                                                :spacing 10))))))
 
 (defn start!
     ([] (start! {:root-stage? true}))
