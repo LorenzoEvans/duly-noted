@@ -84,11 +84,16 @@
     ::press (when (= KeyCode/ENTER (.getCode ^KeyEvent (:fx/event event)))
              (swap! *todo-state* #(-> %
                                       (assoc :typed-text "")
-                                      (assoc-in [:by-id (count (:by-id %))]))))))
+                                      (assoc-in [:by-id (count (:by-id %))]
+                                                {:id (count (:by-id %))
+                                                 :text (:typed-text %)
+                                                 :done false}))))
+    nil))
 
 (def renderer
   (fx/create-renderer
-    :middleware (fx/wrap-map-desc assoc :fx/type root)))
+    :middleware (fx/wrap-map-desc assoc :fx/type root)
+    :opts {:fx.opt/map-event-handler map-event-handler}))
     
 (defn -main []
   (fx/mount-renderer *state* renderer))
