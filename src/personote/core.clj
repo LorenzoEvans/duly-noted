@@ -4,7 +4,7 @@
    :extends javafx.application.Application))
 
 (defn -start [app stage]
-  (core/start {:root-stage? false}))
+  (core/start! {:root-stage? false}))
 
 (defn -main [& args]
   (javafx.application.Application/launch personote.core (into-array String args)))

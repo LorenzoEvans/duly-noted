@@ -14,3 +14,17 @@
      :root-stage? true})
 
 (defonce app-state (atom init-state))
+
+(defmulti handle-event (fn [_ {:keys [event]}] event))
+
+(defmethod handle-event :reset [_ {:keys [root-stage?]}] (assoc init-state :root-stage? root-stage?))
+
+(defn start!
+    ([] (start! {:root-stage? true}))
+    ([{:keys [root-stage?]}]
+     (swap! app-state assoc :root-stage? root-stage?)
+     (let [handler-fn (fn [e] (println e) (try (swap! app-state handle-event e)
+                                               (catch Throwable exception (println exception))))
+           ui-stage (agent (fx/dom/app (stage @app-state) handler-fn))])))
+        
+     
