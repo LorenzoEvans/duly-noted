@@ -28,6 +28,11 @@
 
 (defmethod handle-event :reset [_ {:keys [root-stage?]}] (assoc init-state :root-stage? root-stage?))
 (defmethod handle-event :add-item [state {:keys [fn-fx/includes]}] (update-in -state :notes conj {:done? false :text (get-in includes [::new-item :text]) :tags #{}}))
+(defmethod handle-event :delete-item [state {:keys [id]}] (update-in state [:notes] 
+                                                           (fn [items]
+                                                            (vec (concat (take id items) (drop (inc id) items))))))
+(defmethod handle-event :swap-status [state {:keys [id]}] (update-in state [:notes id done?] (fn [x] (not x))))
+(defmethod handle-event :default [state event] (println (:type event) event state))
 (def main-font (ui/font :family "Helvetica" :size 20))
 
 (defui TodoItem
@@ -48,12 +53,15 @@
                                             :prompt-text "What's on your mind?"
                                             :font main-font
                                             :on-action {:event :add-item
-                                                        :fn-fx/include {::new-item #{text}}})])))
+                                                        :fn-fx/include {::new-item #{:text}}})
+                             (ui/v-box :children (map-indexed (fn [id note] (todo-item (assoc note :id id))) notes))])))
                                             
 (defui Stage
     (render [this {:keys [root-stage? notes typed-text]}]
         (ui/stage :title "Personote"
                   :on-close-request (force-exit)
+                  :min-height 600
+                  :listen/height {:event :height-change :fn-fx/include {::new-item #{:text}}}
                   :shown true
                   :scene (ui/scene :root (ui/border-pane
                                           :top (ui/h-box
