@@ -1,7 +1,10 @@
 (ns personote.note-view
-    (:require [fn-fx.fx-dom :as dom]
+    (:require [fn-fx.fx-dom :as fx-dom]
               [fn-fx.diff :refer [component defui render should-update?]]
-              [fn-fx.controls :as ui]))
+              [fn-fx.controls :as ui])
+    (:import (javafx.stage Stage)))
+
+    
 
 
 (def init-state 
@@ -15,6 +18,9 @@
 
 (defonce app-state (atom init-state))
 
+(defui Stage
+    (render [this {:keys [root-stage? notes typed-text]}]))
+
 (defmulti handle-event (fn [_ {:keys [event]}] event))
 
 (defmethod handle-event :reset [_ {:keys [root-stage?]}] (assoc init-state :root-stage? root-stage?))
@@ -23,14 +29,13 @@
     ([] (start! {:root-stage? true}))
     ([{:keys [root-stage?]}]
      (swap! app-state assoc :root-stage? root-stage?)
-     (let [handler-fn (fn [e] (println e) (try (swap! app-state handle-event e)
-                                               (catch Throwable exception (println exception))))
-           ui-state (agent (dom/app (stage @app-state) handler-fn))]
+     (let [handler-fn (fn [e] (println e) (try (swap! app-state handle-event e) (catch Throwable exception (println exception))))
+           ui-state (agent (fx-dom/app (ui/stage @app-state) handler-fn))]
       (add-watch app-state :ui
         (fn [_ _ _ _]
             (send ui-state (fn [old-ui]
                              (println "-- State Updated --")
                              (println @app-state)
-                             (dom/update-app old-ui (stage @app-state)))))))))
+                             (fx-dom/update-app old-ui (ui/stage @app-state)))))))))
         
      
