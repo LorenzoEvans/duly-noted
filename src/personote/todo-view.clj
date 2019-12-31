@@ -1,4 +1,4 @@
-(ns duly-noted.todo-view
+(ns personote.todo-view
     (:require [cljfx.api :as fx])
     (:import [javafx.scene.input KeyCode KeyEvent]))
 

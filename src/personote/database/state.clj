@@ -1,4 +1,4 @@
-(ns duly-noted.database.state
+(ns personote.database.state
     (:require [cljfx.api :as fx]))
 
 

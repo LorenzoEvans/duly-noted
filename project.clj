@@ -1,4 +1,4 @@
-(defproject duly-noted "0.1.0-SNAPSHOT"
+(defproject personote "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
@@ -7,6 +7,6 @@
                  [org.clojure/java.jdbc "0.7.10"]
                  [fn-fx/fn-fx-javafx "0.5.0-SNAPSHOT"]
                  [org.postgresql/postgresql "42.1.4"]]
-  :main duly-noted.core
-  :aot [duly-noted.core]
-  :repl-options {:init-ns duly-noted.core})
+  :main personote.core
+  :aot [personote.core]
+  :repl-options {:init-ns personote.core})
