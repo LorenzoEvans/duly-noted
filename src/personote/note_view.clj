@@ -25,12 +25,12 @@
      (swap! app-state assoc :root-stage? root-stage?)
      (let [handler-fn (fn [e] (println e) (try (swap! app-state handle-event e)
                                                (catch Throwable exception (println exception))))
-           ui-state (agent (fx/dom/app (stage @app-state) handler-fn))]
+           ui-state (agent (dom/app (stage @app-state) handler-fn))]
       (add-watch app-state :ui
         (fn [_ _ _ _]
             (send ui-state (fn [old-ui]
                              (println "-- State Updated --")
                              (println @app-state)
-                             (fx-dom/update-app old-ui (stage @app-state)))))))))
+                             (dom/update-app old-ui (stage @app-state)))))))))
         
      

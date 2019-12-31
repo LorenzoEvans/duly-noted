@@ -6,7 +6,10 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/java.jdbc "0.7.10"]
                  [fn-fx/fn-fx-javafx "0.5.0-SNAPSHOT"]
+                 [fn-fx/fn-fx-openjfx11 "0.5.0-SNAPSHOT"]
                  [org.postgresql/postgresql "42.1.4"]]
   :main personote.core
   :aot [personote.core]
+  :target-path "target/%s"
+  :profiles {:uberjar {:aot :all}}
   :repl-options {:init-ns personote.core})
