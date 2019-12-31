@@ -1,5 +1,6 @@
 (ns personote.core
   (:require [personote.note-view :as core])
+  (:import [javafx.application Application])
   (:gen-class
    :extends javafx.application.Application))
 
