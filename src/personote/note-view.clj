@@ -1,4 +1,4 @@
-(ns personote.todo-view
+(ns personote.note-view
     (:require [cljfx.api :as fx])
     (:import [javafx.scene.input KeyCode KeyEvent]))
 
