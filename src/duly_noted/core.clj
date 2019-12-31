@@ -1,6 +1,7 @@
 (ns duly-noted.core
   (:require [cljfx.api :as fx]
             [duly-noted.database.state :refer [*state* *todo-state*]])
+  (:import [javafx.scene.input KeyCode KeyEvent])
   (:gen-class))
 
 
@@ -38,23 +39,31 @@
     ;                                 :text "Welcome to your application!"}]}}})))  
 
 
-(defn title-input [{:keys [title]}]
-  {:fx/type :text-field
-   :on-text-changed #(swap! *state* assoc :title %)
-   :text title})
-
-(defn root [{:keys [title]}]
+; (defn title-input [{:keys [title]}]
+;   {:fx/type :text-field
+;    :on-text-changed #(swap! *state* assoc :title %)
+;    :text title})
+(defn root [{:keys [by-id typed-text]}]
   {:fx/type :stage
    :showing true
-   :title title
-   :width 500
-   :height 500
    :scene {:fx/type :scene
            :root {:fx/type :v-box
-                  :children [{:fx/type :label
-                              :text "Title input"}
-                             {:fx/type title-input
-                              :title title}]}}}) 
+                  :pref-width 300
+                  :pref-height 400
+                  :children [{:fx/type :scroll-pane
+                              :v-box/vgrow :always
+                              :fit-to-width true
+                              :content {:fx/type :v-box
+                                        :children (->> by-id
+                                                       vals
+                                                       (sort-by (juxt :done :id))
+                                                       (map #(assoc % :fx/type todo-view :fx/key (:id %))))}}
+                             {:fx/type :text-field
+                              :v-box/margin 5
+                              :text typed-text
+                              :prompt-text "Add a new to-do item."
+                              :on-text-changed {:event/type ::type}
+                              :on-key-pressed {:event/type ::press}}]}}})
 
 (defn todo-view [{:keys [text id done]}]
   {:fx/type :h-box
@@ -62,12 +71,20 @@
    :padding 5
    :children [{:fx/type :check-box
                :selected done
-               :on-selected-changed #(swap! *todo-state* assoc-in [:by-id id done] %)
-               {:fx/type :label
-                :style {:-fx-text-fill (if done :grey :black)}
-                :text text}}]})
+               :on-selected-changed {:event/type ::set-done :id id}}
+              {:fx/type :label}
+              :style {:-fx-text-fill (if done :grey :black)}
+              :text text]})
    
-     
+            
+(defn map-event-handler [event]
+  (case (:event/type event)
+    ::set-done (swap! *todo-state* assoc-in [:by-id (:id event) :done] (:fx/event event))
+    ::type (swap! *todo-state* assoc :typed-text (:fx/event event))
+    ::press (when (= KeyCode/ENTER (.getCode ^KeyEvent (:fx/event event)))
+             (swap! *todo-state* #(-> %
+                                      (assoc :typed-text "")
+                                      (assoc-in [:by-id (count (:by-id %))]))))))
 
 (def renderer
   (fx/create-renderer
