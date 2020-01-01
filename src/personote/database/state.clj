@@ -1,4 +1,4 @@
-(ns duly-noted.database.state
+(ns personote.database.state
     (:require [cljfx.api :as fx]))
 
 
@@ -9,7 +9,10 @@
     (atom {:typed-text ""
            :by-id {0 {:id 0
                       :text "Write Code."
-                      :done false}
+                      :done false
+                      :tags #{}}
                    1 {:id 1
                       :text "Drink coffee."
-                      :done true}}}))
+                      :done true
+                      :tags #{}}}}))
+                      

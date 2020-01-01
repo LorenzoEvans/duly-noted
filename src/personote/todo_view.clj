@@ -1,6 +1,6 @@
-(ns duly-noted.todo-view
+(ns personote.todo-view
     (:require [cljfx.api :as fx]
-              [duly-noted.database.state :refer [*todo-state*]])
+              [personote.database.state :refer [*todo-state*]])
     (:import [javafx.scene.input KeyCode KeyEvent]))
 
 
@@ -20,8 +20,8 @@
    :showing true
    :scene {:fx/type :scene
            :root {:fx/type :v-box
-                  :pref-width 300
-                  :pref-height 400
+                  :pref-width 700
+                  :pref-height 700
                   :children [{:fx/type :scroll-pane
                               :v-box/vgrow :always
                               :fit-to-width true

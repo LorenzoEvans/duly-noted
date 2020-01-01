@@ -1,4 +1,4 @@
-(defproject duly-noted "0.1.0-SNAPSHOT"
+(defproject personote "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
@@ -10,5 +10,5 @@
                  [com.bigchaindb/bigchaindb-driver "1.2"]
                  [cljfx "1.6.0"]
                  [seesaw "1.5.0"]]
-  :main duly-noted.core
-  :repl-options {:init-ns duly-noted.core})
+  :main personote.core
+  :repl-options {:init-ns personote.core})

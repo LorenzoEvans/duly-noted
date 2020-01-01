@@ -1,6 +1,6 @@
-(ns duly-noted.core
+(ns personote.core
   (:require [cljfx.api :as fx]
-            [duly-noted.todo-view :refer [start!]])
+            [personote.todo-view :refer [start!]])
   (:import [javafx.scene.input KeyCode KeyEvent])
   (:gen-class))
 

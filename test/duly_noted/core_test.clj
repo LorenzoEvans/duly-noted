@@ -1,6 +1,6 @@
-(ns duly-noted.core-test
+(ns personote.core-test
   (:require [clojure.test :refer :all]
-            [duly-noted.core :refer :all]))
+            [personote.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."
