@@ -2,8 +2,6 @@
   (:require [personote.note-view :as core])
   (:gen-class :extends javafx.application.Application))
 
-(defn -start [app stage]
-  (core/start! {:root-stage? false}))
 
-(defn -main [& args]
-  (javafx.application.Application/launch personote.core (into-array String args)))
+
+(core/-main)
