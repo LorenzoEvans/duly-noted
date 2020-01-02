@@ -5,14 +5,14 @@
 (def ^:dynamic *state*
     (atom {:title "Duly Notes"}))
 
-(def ^:dynamic *todo-state*
+(def ^:dynamic *note-state*
     (atom {:typed-text ""
-           :by-id {0 {:id 0
-                      :text "Write Code."
-                      :done false
-                      :tags #{}}
-                   1 {:id 1
-                      :text "Drink coffee."
-                      :done true
-                      :tags #{}}}}))
+           :notes  [{:id 0
+                     :text "Write Code."
+                     :done false
+                     :tags #{}}
+                    {:id 1
+                     :text "Drink coffee."
+                     :done true
+                     :tags #{}}]}))
                       

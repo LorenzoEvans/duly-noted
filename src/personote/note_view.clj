@@ -1,13 +1,13 @@
-(ns personote.todo-view
+(ns personote.note-view
     (:require [cljfx.api :as fx]
-              [personote.database.state :refer [*todo-state*]])
+              [personote.database.state :refer [*note-state*]])
     (:import [javafx.scene.input KeyCode KeyEvent]
              [javafx.application Platform]
              [javafx.scene.paint Color]
              [javafx.scene.canvas Canvas]))
 
 
-(defn todo-view [{:keys [text id done]}]
+(defn note-view [{:keys [text id done]}]
   {:fx/type :v-box
    :spacing 5 
    :padding 5
@@ -16,9 +16,12 @@
                :on-selected-changed {:event/type ::set-done :id id}}
               {:fx/type :label
                :style {:-fx-text-fill (if done :grey :black)}
-               :text text}]})
+               :text text}
+              {:fx/type :button
+               :text "X"
+               :on-action {:event/type ::delete-item :id id}}]}) 
 
-(defn root [{:keys [by-id typed-text]}]
+(defn root [{:keys [notes typed-text]}]
   {:fx/type :stage
    :title "Personote"
    :showing true
@@ -30,11 +33,11 @@
                               :v-box/vgrow :always
                               :fit-to-width true
                               :content {:fx/type :v-box
-                                        :children (->> by-id
+                                        :children (->> notes
                                                        vals
                                                        (sort-by (juxt :done :id))
                                                        (map #(assoc %
-                                                               :fx/type todo-view
+                                                               :fx/type note-view
                                                                :fx/key (:id %))))}}
                              {:fx/type :text-field
                               :v-box/margin 5
@@ -46,20 +49,28 @@
 
 (defn map-event-handler [event]
   (case (:event/type event)
-    ::set-done (swap! *todo-state* assoc-in [:by-id (:id event) :done] (:fx/event event))
-    ::type (swap! *todo-state* assoc :typed-text (:fx/event event))
+    ::set-done (swap! *note-state* assoc-in [:notes (:id event) :done] (:fx/event event))
+    ::type (swap! *note-state* assoc :typed-text (:fx/event event))
+    ::delete-item (try 
+                  ;  (swap! *note-state* dissoc [:notes (:id event)] (:id event) (:fx/event event))
+                   (swap! *note-state* update-in [:notes] 
+                    (fn [elements] 
+                      (filterv 
+                        (fn [itm] (not= (:id event) (:id itm))))) (:id event))
+                   (println (:id event))
+                   (catch Throwable exception (println exception)))
     ::press (when (= KeyCode/ENTER (.getCode ^KeyEvent (:fx/event event)))
-              (swap! *todo-state* #(-> %
+              (swap! *note-state* #(-> %
                                     (assoc :typed-text "")
-                                    (assoc-in [:by-id (count (:by-id %))]
-                                           {:id (count (:by-id %))
+                                    (assoc-in [:notes (count (:notes %))]
+                                           {:id (count (:notes %))
                                             :text (:typed-text %)
                                             :done false}))))
     nil))
 
 (defn start! []
  (fx/mount-renderer
-  *todo-state*
+  *note-state*
   (fx/create-renderer
     :middleware (fx/wrap-map-desc assoc :fx/type root)
     :opts {:fx.opt/map-event-handler map-event-handler})))
