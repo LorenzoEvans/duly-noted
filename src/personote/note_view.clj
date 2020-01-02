@@ -34,7 +34,9 @@
                               :fit-to-width true
                               :content {:fx/type :v-box
                                         :children (->> notes
-                                                       (map #(assoc % :fx/type note-view :fx/key (:id %))))}}
+                                                       vals
+                                                       (sort-by (juxt :done :id))
+                                                       (map #(assoc % :fx/type note-view :fx/key (println (int (:id %)))) notes))}}
                              {:fx/type :text-field
                               :v-box/margin 5
                               :pref-height 300
@@ -47,11 +49,8 @@
   (case (:event/type event)
     ::set-done (swap! *note-state* assoc-in [:notes (:id event) :done] (:fx/event event))
     ::type (swap! *note-state* assoc :typed-text (:fx/event event))
-    ::delete-item (swap! *note-state* dissoc [:notes (:id event)] (:id event) (:fx/event event))
-                  ;  (swap! *note-state* update-in [:notes] 
-                  ;   (fn [elements] 
-                  ;     (filterv 
-                  ;       (fn [itm] (not= (:id event) (:id itm))))) (:id event))
+    ::delete-item ; (swap! *note-state* dissoc [:notes (:id event)] (:id event) (:fx/event event))
+                   (swap! *note-state* update-in [:notes (:id event)] (fn [elements] (filterv (fn [itm] (= (:id event) (:id itm))) (get-in *note-state* [:notes]))))
     ::press (when (= KeyCode/ENTER (.getCode ^KeyEvent (:fx/event event)))
               (swap! *note-state* #(-> %
                                     (assoc :typed-text "")
