@@ -44,7 +44,7 @@
                                                       ;     (catch Throwable ex (println))))
                                                       ; mutating a javafx component seems in bad taste
                                                       ; thinking style => add database => re-write crud 
-                                                       (map #(assoc (print %) :fx/type note-view :fx/key (int (:id %)))))}}
+                                                       (map #(assoc  % :fx/type note-view :fx/key (int (:id %)))))}}
                                                           
                              {:fx/type :text-field
                               :v-box/margin 5

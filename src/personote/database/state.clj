@@ -1,5 +1,6 @@
 (ns personote.database.state
     (:require [cljfx.api :as fx]))
+              
 
 
 (def ^:dynamic *state*

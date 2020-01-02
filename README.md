@@ -1,7 +1,8 @@
-# duly-noted
+# Personote
 
-A Clojure library designed to ... well, that part is up to you.
+A minimalist text editor for jotting notes, stashing ideas.
 
+!["Personote application"](personote.png)
 ## Usage
 
 FIXME
