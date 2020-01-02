@@ -8,7 +8,7 @@
      :classname "org.postgresql.Driver"
      :dbname "personote-db"
      :user "lorenzo-evans"
-     :port 
+     :port 5432
      :password "password"})
 
 (def user-table-ddl
@@ -17,12 +17,13 @@
                                [[:username "varchar(32)"]
                                 [:email "varchar(32)"]
                                 [:password "varchar(32)"]
-                                [:id :primary :key]])))
+                                [:user_id :integer "NOT NULL"]])))
+                                
 (def note-table-ddl
     (jdbc/db-do-commands "postgresql://localhost:5432/personote"
         (jdbc/create-table-ddl :notes
                            [[:title "varchar(32)"]
-                            [:owner :integer :references :users :id]
+                            [:owner_id "FOREIGN KEY" "REFERENCES users(user_id)"]
                             [:content :text]
                             [:tags "text[]"]])))
                            
