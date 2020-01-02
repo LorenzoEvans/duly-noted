@@ -1,8 +1,19 @@
 (ns personote.database.state
-    (:require [cljfx.api :as fx]))
+    (:require [cljfx.api :as fx]
+              [clojure.java.jdbc :as jdbc]))
               
 
+(def db-spec
+    {:dbtype "postgresql"
+     :dbname "personote-db"
+     :user "lorenzo-evans"
+     :password "password"})
 
+
+(def note-table-ddl
+    (jdbc/create-table-ddl :notes
+                           [[:title "varchar(32"]]))
+                           
 (def ^:dynamic *state*
     (atom {:title "Duly Notes"}))
 
