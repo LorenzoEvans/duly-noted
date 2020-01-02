@@ -5,6 +5,7 @@
     (:import [javafx.scene.input KeyCode KeyEvent]
              [javafx.application Platform]
              [javafx.scene.paint Color]
+             [javafx.scene.control Button]
              [javafx.scene.canvas Canvas]))
 
 
@@ -20,7 +21,7 @@
                :text text}
               {:fx/type :button
                :text "X"
-               :pressed {:event/type ::delete-item :id id}}]}) 
+               :on-mouse-clicked {:event/type ::delete-item :id id}}]}) 
 
 (defn root [{:keys [notes typed-text]}]
   {:fx/type :stage
@@ -41,7 +42,9 @@
                                                       ;  (as-> (map #(assoc % :fx/type note-view :fx/key (int (:id %))) notes) test-fn
                                                       ;    (try test-fn
                                                       ;     (catch Throwable ex (println))))
-                                                       (map #(assoc % :fx/type note-view :fx/key (int (:id %)))))}}
+                                                      ; mutating a javafx component seems in bad taste
+                                                      ; thinking style => add database => re-write crud 
+                                                       (map #(assoc (print %) :fx/type note-view :fx/key (int (:id %)))))}}
                                                           
                              {:fx/type :text-field
                               :v-box/margin 5
