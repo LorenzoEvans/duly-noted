@@ -21,27 +21,6 @@
 ; - `:fx.opt/map-event-handler` — a function that gets called when map is used in place
 ;   of change-listener, event-handler or any other callback-like prop. It receives that
 ;   map with `:fx/event` key containing appropriate event data"
-; (def renderer (fx/create-renderer))
 
-    
-    ; (defn root [{:keys [showing]}]
-    ;   (fx/on-fx-thread ; Execute body in implicit do, if current thread is fx thread, body executes immediately.
-    ;    (fx/create-component
-    ;     {:fx/type :stage
-    ;      :showing true
-    ;      :title "CLJFX EX"
-    ;      :width 600
-    ;      :height 500
-    ;      :scene {:fx/type :scene
-    ;              :root {:fx/type :v-box
-    ;                     :alignment :center
-    ;                     :children [{:fx/type :label
-    ;                                 :text "Welcome to your application!"}]}}})))  
-
-
-; (defn title-input [{:keys [title]}]
-;   {:fx/type :text-field
-;    :on-text-changed #(swap! *state* assoc :title %)
-;    :text title})
 (defn -main []
   (start!))

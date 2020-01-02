@@ -1,5 +1,6 @@
 (ns personote.note-view
     (:require [cljfx.api :as fx]
+              [clojure.pprint :as pp]
               [personote.database.state :refer [*note-state*]])
     (:import [javafx.scene.input KeyCode KeyEvent]
              [javafx.application Platform]
@@ -19,7 +20,7 @@
                :text text}
               {:fx/type :button
                :text "X"
-               :on-action {:event/type ::delete-item :id id}}]}) 
+               :pressed {:event/type ::delete-item :id id}}]}) 
 
 (defn root [{:keys [notes typed-text]}]
   {:fx/type :stage
@@ -33,10 +34,15 @@
                               :v-box/vgrow :always
                               :fit-to-width true
                               :content {:fx/type :v-box
-                                        :children (->> notes
+                                        :children (->> 
+                                                       notes
                                                        vals
                                                        (sort-by (juxt :done :id))
-                                                       (map #(assoc % :fx/type note-view :fx/key (println (int (:id %)))) notes))}}
+                                                      ;  (as-> (map #(assoc % :fx/type note-view :fx/key (int (:id %))) notes) test-fn
+                                                      ;    (try test-fn
+                                                      ;     (catch Throwable ex (println))))
+                                                       (map #(assoc % :fx/type note-view :fx/key (int (:id %)))))}}
+                                                          
                              {:fx/type :text-field
                               :v-box/margin 5
                               :pref-height 300
@@ -44,13 +50,13 @@
                               :prompt-text "Add new note and press ENTER"
                               :on-text-changed {:event/type ::type}
                               :on-key-pressed {:event/type ::press}}]}}})
-
+; (println (:arglists (meta #'root)))
 (defn map-event-handler [event]
   (case (:event/type event)
     ::set-done (swap! *note-state* assoc-in [:notes (:id event) :done] (:fx/event event))
     ::type (swap! *note-state* assoc :typed-text (:fx/event event))
-    ::delete-item ; (swap! *note-state* dissoc [:notes (:id event)] (:id event) (:fx/event event))
-                   (swap! *note-state* update-in [:notes (:id event)] (fn [elements] (filterv (fn [itm] (= (:id event) (:id itm))) (get-in *note-state* [:notes]))))
+    ::delete-item (swap! *note-state* assoc-in [:notes (:id event)] nil)
+                  ;  (swap! *note-state* update-in [:notes (:id event)] (fn [elements] (filterv (fn [itm] (= (:id event) (:id itm))) (get-in *note-state* [:notes]))))
     ::press (when (= KeyCode/ENTER (.getCode ^KeyEvent (:fx/event event)))
               (swap! *note-state* #(-> %
                                     (assoc :typed-text "")
