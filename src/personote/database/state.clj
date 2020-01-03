@@ -10,25 +10,31 @@
      :user "lorenzo-evans"
      :port 5432
      :password "password"})
-
+; (jdbc/execute! personote (jdbc/drop-table-ddl :users))
 (def user-table-ddl
-    (jdbc/db-do-commands "postgresql://localhost:5432/personote"
         (jdbc/create-table-ddl :users
                                [[:username "varchar(32)"]
                                 [:email "varchar(32)"]
                                 [:password "varchar(32)"]
-                                [:user_id :integer "NOT NULL"]])))
-                                
+                                [:user_id :serial "PRIMARY KEY"]]))
+                            
+; (jdbc/execute! personote (jdbc/drop-table-ddl :notes))
 (def note-table-ddl
-    (jdbc/db-do-commands "postgresql://localhost:5432/personote"
         (jdbc/create-table-ddl :notes
                            [[:title "varchar(32)"]
-                            [:owner_id "FOREIGN KEY" "REFERENCES users(user_id)"]
+                            ["CONSTRAINT id PRIMARY KEY (user_id)"]
                             [:content :text]
-                            [:tags "text[]"]])))
-                           
-(def ^:dynamic *state*
-    (atom {:title "Duly Notes"}))
+                            [:tags "text[]"]]))
+
+(println "User Table: " user-table-ddl)
+(println "Note Table: " note-table-ddl)
+
+(defonce db-tables (jdbc/execute! db-spec [user-table-ddl note-table-ddl]))
+
+(defn add-user [db table username email password] 
+    (j/insert db table {:username username :email email :password password}))
+
+(add-user db-spec :users "Jack_Sparrow" "pirate@bperl.com" "yohoho")
 
 (def ^:dynamic *note-state*
     (atom {:typed-text ""
