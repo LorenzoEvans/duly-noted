@@ -9,6 +9,7 @@
                  ;; https://mvnrepository.com/artifact/com.bigchaindb/bigchaindb-driver
                  [com.bigchaindb/bigchaindb-driver "1.2"]
                  [cljfx "1.6.0"]
+                 [cljfx/css "1.1.0"]
                  [seesaw "1.5.0"]]
   :main personote.core
   :repl-options {:init-ns personote.core})

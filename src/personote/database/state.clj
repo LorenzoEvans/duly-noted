@@ -37,3 +37,15 @@
     (jdbc/insert! db table {:username username :email email :password password}))
 
 (add-user db-spec :users "Jack_Sparrow" "pirate@bperl.com" "yohoho")
+
+
+(def ^:dynamic *note-state*
+    (atom {:typed-text ""
+           :notes  {0 {:id 0
+                       :text "Write Code."
+                       :title "CtCI Tips"
+                       :tags #{}}
+                    1 {:id 1
+                       :title "Morning Routine"
+                       :text "Drink coffee, meditate, make sure we know where our keys are, talk a walk, grab second coffee."
+                       :tags #{}}}}))
