@@ -1,13 +1,25 @@
 (ns personote.note-view
     (:require [cljfx.api :as fx]
               [cljfx.css :as css]
-              [clojure.pprint :as pp]
-              [personote.database.state :refer [*note-state*]])
+              [clojure.pprint :as pp])
     (:import [javafx.scene.input KeyCode KeyEvent]
              [javafx.application Platform]
              [javafx.scene.paint Color]
              [javafx.scene.control Button]
              [javafx.scene.canvas Canvas]))
+
+
+
+(def ^:dynamic *note-state*
+    (atom {:typed-text ""
+           :notes  {0 {:id 0
+                       :text "Write Code."
+                       :title "CtCI Tips"
+                       :tags #{}}
+                    1 {:id 1
+                       :title "Morning Routine"
+                       :text "Drink coffee, meditate, make sure we know where our keys are, talk a walk, grab second coffee."
+                       :tags #{}}}}))
 
 (def root-style 
   (css/register ::root-style 
