@@ -48,7 +48,7 @@
               {:fx/type :button
                :text "Delete"
                :on-mouse-clicked {:event/type ::delete-item :id id}}]}) 
-
+; (defn note-view [{:keys [text id tit]}])
 (defn root [{:keys [notes typed-text]}]
   {:fx/type :stage
    :title "Personote"
