@@ -27,3 +27,21 @@ values (:user_name, :email, :password)
 insert into users (user_name, email, password)
 values :tuple*users
 
+-- :name update-username
+update users
+set user_name = :user_name
+where id := id
+
+-- :name update-email
+update users
+set email = :email
+where id = :id
+
+-- :name update-password
+update users 
+set password = :password
+where id =  :id
+
+-- :name delete-user
+
+
