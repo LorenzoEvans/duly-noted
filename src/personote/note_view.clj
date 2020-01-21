@@ -1,7 +1,7 @@
 (ns personote.note-view
     (:require [cljfx.api :as fx]
-              [clojure.pprint :as pp]
-              [personote.database.state :refer [*note-state*]])
+              [cljfx.css :as css]
+              [clojure.pprint :as pp])
     (:import [javafx.scene.input KeyCode KeyEvent]
              [javafx.application Platform]
              [javafx.scene.paint Color]
@@ -9,25 +9,64 @@
              [javafx.scene.canvas Canvas]))
 
 
-(defn note-view [{:keys [text id done]}]
+
+(def ^:dynamic *note-state*
+    (atom {:typed-text ""
+           :notes  {0 {:id 0
+                       :text "Write Code."
+                       :title "CtCI Tips"
+                       :tags #{}}
+                    1 {:id 1
+                       :title "Morning Routine"
+                       :text "Drink coffee, meditate, make sure we know where our keys are, talk a walk, grab second coffee."
+                       :tags #{}}}}))
+
+(def root-style 
+  (css/register ::root-style 
+    (let [xs 2
+          s 5
+          m 10
+          l 15]
+      {::padding s
+       ::spacing m
+       ".root" {:-fx-padding s}
+       ".label" {:-fx-padding m}
+       ".button" {:-fx-padding ["4px" "8px"]
+                  ":hover" {:-fx-text-fill :red}}
+       ".vbox" {:-fx-background-color :black}})))
+  
+(def note-view-style 
+  (css/register ::note-style
+    (let [xs 2
+          s 5
+          m 10
+          l 15]
+      {::padding s
+       ::spacing s
+       ".label" {:-fx-padding s :-fx-text-fill :green}})))
+           
+(defn note-view [{:keys [text id title]}]
   {:fx/type :v-box
    :spacing 5 
    :padding 5
-   :children [{:fx/type :check-box
-               :selected done
-               :on-selected-changed {:event/type ::set-done :id id}}
+   :children [
               {:fx/type :label
-               :style {:-fx-text-fill (if done :grey :black)}
+               :style {:-fx-text-fill :black}
+               :text title}
+              {:fx/type :label
+               :pref-height 200
+               :style {:-fx-text-fill :black}
                :text text}
               {:fx/type :button
-               :text "X"
+               :text "Delete"
                :on-mouse-clicked {:event/type ::delete-item :id id}}]}) 
-
+; (defn note-view [{:keys [text id tit]}])
 (defn root [{:keys [notes typed-text]}]
   {:fx/type :stage
    :title "Personote"
    :showing true
    :scene {:fx/type :scene
+           :stylesheets [(::css/url root-style)]
            :root {:fx/type :v-box
                   :pref-width 700
                   :pref-height 700
@@ -44,7 +83,7 @@
                                                       ;     (catch Throwable ex (println))))
                                                       ; mutating a javafx component seems in bad taste
                                                       ; thinking style => add database => re-write crud 
-                                                       (map #(assoc (print %) :fx/type note-view :fx/key (int (:id %)))))}}
+                                                       (map #(assoc  % :fx/type note-view :fx/key (int (:id %)))))}}
                                                           
                              {:fx/type :text-field
                               :v-box/margin 5
