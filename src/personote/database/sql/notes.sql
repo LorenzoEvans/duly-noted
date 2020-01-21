@@ -5,7 +5,7 @@
 -- :result :raw
 -- :doc Create notes table
 
--- create table notes (
---   id  integer auto_increment primary key,
---   title
--- )
+create table notes (
+   id  integer auto_increment primary key,
+  title
+)
